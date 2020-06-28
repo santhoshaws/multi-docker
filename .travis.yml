@@ -1,0 +1,23 @@
+sudo: required
+services:
+ - docker
+
+before_install:
+ - docker build -t maniraj14/react-test -f ./client/Dockerfile.dev ./client
+
+scripts:
+ - docker run maniraj14/react-test npm test -- --coverage
+
+after_success:
+ - docker build -t maniraj14/multi-client ./client
+ - docker build -t maniraj14/multi-worker ./worker
+ - docker build -t maniraj14/multi-server ./server
+ - docker build -t maniraj14/multi-nginx ./nginx
+
+#Log into to the Docker hub to push prod images for deploy
+ - echo "$DOCKER_PASSWORD" | docker login -u $DOCKER_ID --password-stdin
+ 
+ - docker push maniraj14/multi-client
+ - docker push maniraj14/multi-worker
+ - docker push maniraj14/multi-server
+ - docker push maniraj14/multi-nginx
