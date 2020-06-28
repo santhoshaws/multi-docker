@@ -6,7 +6,7 @@ before_install:
  - docker build -t maniraj14/react-test -f ./client/Dockerfile.dev ./client
 
 scripts:
- - docker run maniraj14/react-test npm test -- --coverage
+ - docker run -e CI=true maniraj14/react-test npm test -- --coverage
 
 after_success:
  - docker build -t maniraj14/multi-client ./client
